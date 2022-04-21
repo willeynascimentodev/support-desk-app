@@ -61,6 +61,11 @@ function Register() {
             dispatch(register(userData))
         }
     }
+
+    if (isLoading) {
+        return <p>Loading...</p>
+    }
+    
     return (
         <>
         <section className="heading">
