@@ -11,7 +11,7 @@ function Home() {
 
             <div>
                 <Link to='/new-ticket' className='btn btn-reverse btn-block'> Create New Ticket </Link>
-                <Link to='/new-ticket' className='btn btn-reverse btn-block'> View My Tickets </Link>
+                <Link to='/tickets' className='btn btn-reverse btn-block'> View My Tickets </Link>
             </div>
         </>
     )
