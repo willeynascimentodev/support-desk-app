@@ -31,7 +31,7 @@ const getTicket = asyncHandler(async (req, res) => {
 
 const createTicket = asyncHandler(async (req, res) => { 
     const { product, description } = req.body
-
+    console.log(req.body)
     if(!product || !description ) {
         res.status(400)
         throw new Error('Please add new product and description')

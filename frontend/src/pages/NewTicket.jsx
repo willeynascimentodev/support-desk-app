@@ -1,19 +1,46 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { createTicket, reset } from '../features/tickets/ticketSlice'
+import BackButton from '../components/BackButton'
 
 function NewTicket() {
     const { user } = useSelector((state) => state.auth)
+    const { isLoading, isError, isSuccess, message} = useSelector( (state) => state.ticket)
     const [name] = useState(user.name)
     const [email] = useState(user.email)
     const [product, setProduct] = useState('')
     const [description, setDescription] = useState('')
-    
-    const onSubmit = (e) => {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    
+    useEffect( () => {
+        if(isError) {
+            toast.error(message)
+        }
+
+        if(isSuccess){
+            dispatch(reset())
+            navigate('/tickets')
+        }
+
+        dispatch(reset())
+    }, [dispatch, isError, isSuccess, navigate, message])
+
+    const onSubmit = (e) => {
+        e.preventDefault()
+        dispatch(createTicket({ product, description }))
+    }
+
+    if(isLoading) {
+        return <p>Loading...</p>
     }
 
     return (
         <>
+            <BackButton url='/' />
             <section className="heading">
                 <h1>Create a new ticket</h1>
                 <p>Plaease fill out the form bellow</p>
@@ -43,7 +70,7 @@ function NewTicket() {
                 <form onSubmit={ onSubmit }>
                     <div className="form-group">
                         <label htmlFor="product">Product</label>
-                        <select name="product" id="product" value={product} onChange={ (e) => setProduct(e.target.value) }>
+                        <select name="product" id="product" value={ product } onChange={ (e) => setProduct(e.target.value) }>
                             <option value="Iphone">Iphone</option>
                             <option value="Macbook Pro">Macbook Pro</option>
                             <option value="iMac">iMac</option>
