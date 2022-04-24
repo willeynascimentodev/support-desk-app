@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getTicket, closeTicket, reset } from '../features/tickets/ticketSlice'
-import { getNotes,  reset as notesReset } from '../features/notes/noteSlice'
+import { getNotes, createNote,  reset as notesReset } from '../features/notes/noteSlice'
 import BackButton from '../components/BackButton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import NoteItem from '../components/NoteItem'
-import Model from 'react-model'
+import Modal from 'react-modal'
 
 function Ticket() {
     const { ticket, isLoading, isSuccess, isError, message } = useSelector( (state) => state.tickets)
@@ -28,8 +28,10 @@ function Ticket() {
         navigate('/tickets')
     }
 
-    const openModal = () => setModelIsOpen(true)
-    const closeModal = () => setModelIsOpen(false)
+    const onNoteSubmit = (e) =>{
+        e.preventDefault()
+        dispatch(createNote({ noteText, ticketId}))
+    }
 
     useEffect(() => {
         if(isError) {
@@ -65,13 +67,22 @@ function Ticket() {
             <h2>Notes</h2>
         </header>
 
-        { ticket.status !== 'closed' && 
-            <button className="btn">
-                Add Note
-            </button>
-        }
-        
-        
+        <form onSubmit={ onNoteSubmit }>
+            <div className="form-group">
+                <textarea 
+                    name="noteText" 
+                    id="noteText" 
+                    className='form-control' 
+                    placeholder='Note Text' 
+                    value={ noteText } onChange={ (e) => setNoteText(e.target.value) }
+                >
+                        
+                </textarea>
+            </div>
+            <div className="form-group">
+                <button className="btn" type='submit'>Submit</button>
+            </div>
+        </form>
         
         { ticket.status !== 'closed' && (
             <button onClick={ onTicketClose } className="btn btn-block btn-danger">
